@@ -17,51 +17,67 @@ public class PlayerCharacter : MonoBehaviour {
     public float jumpForce = 5f;
     public int maxJumps = 2;
     private int currentJumps = 0;
+    
 
     public Atributes.Color color;
 
     
     public float jumpDurability = 1f;
-    private float currentTime;
+    private float curJumpDurability;
 
 
-    public CameraShake cameraShake;
-    public CameraFollow cameraFollow;
 
-    public Animator animation;
+   
+
+    private bool isDead = false;
+    private bool isWinner = false;
+
+    private Vector3 newVelocity;
+
+    private bool controlled = true;
 
 
 	void Start () {
         rigidbody = GetComponent<Rigidbody>();
-        currentTime = jumpDurability;
+        curJumpDurability = jumpDurability;
         renderer = GetComponent<Renderer>();
+
+        Debug.Log(Input.touchSupported);
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
-        float x = Input.GetAxis("Horizontal");
-        Jump();
-        ChangeRenderer();
-
-        //rigidbody.MovePosition(transform.position + new Vector3( speed * Time.deltaTime, 0, 0));
-        Vector3 newVelocity = rigidbody.velocity;
-        newVelocity.x =x* speed;
-        rigidbody.velocity = newVelocity;
-        //rigidbody.AddForce(new Vector3(speed, 0, 0));
+	void Update () {
+    
+        if(controlled){
+            newVelocity = rigidbody.velocity;
+            newVelocity.x = speed;
+            Jump();
+            ChangeRenderer();
+            rigidbody.velocity = newVelocity;
+        }
+        
 	}
 
 
 
+    void Control(){
+        if(Input.touchCount>0){
+            foreach(var touch in Input.touches){
+                if(touch.position.x >= Screen.width/2 && currentJumps < maxJumps && curJumpDurability>0){                   
+                        newVelocity.y = jumpForce;
+                
+                }
+            }
+        }
+    }
+
     void Jump()
     {
-        if (Input.GetKey(KeyCode.Space) && currentJumps < maxJumps && currentTime > 0)
+        
+        if (Input.GetKey(KeyCode.Space) && currentJumps < maxJumps && curJumpDurability > 0)
         {
-            //rigidbody.AddForce(new Vector3(0, jumpForce, 0));
-            //rigidbody.velocity = new Vector3(0, jumpForce, 0);
-            Vector3 newVelocity = rigidbody.velocity;
             newVelocity.y = jumpForce;
-            rigidbody.velocity = newVelocity;
-            currentTime -= Time.deltaTime;
+            curJumpDurability -= Time.deltaTime;
         }
         else
         {
@@ -71,8 +87,7 @@ public class PlayerCharacter : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.Space))
         {
             currentJumps++;
-            currentTime = jumpDurability;
-            
+            curJumpDurability = jumpDurability;           
         }
         
     }
@@ -92,6 +107,7 @@ public class PlayerCharacter : MonoBehaviour {
                 renderer.material = materials[0];
                 color = Atributes.Color.purple;
             }
+            
         }
     }
 
@@ -111,36 +127,18 @@ public class PlayerCharacter : MonoBehaviour {
 
     public void Death()
     {
-        if (cameraShake)
-        {
-            StartCoroutine(cameraShake.Shake(.15f, .4f));
-            if (animation)
-            {
-                animation.enabled = true;
-            }
+        if(isDead || isWinner){
+            return;
         }
-        if (cameraFollow)
-        {
-            cameraFollow.follow = false;
-            
-        }
+        isDead = true;        
         renderer.enabled = false;
-        StartCoroutine(WaitAndLoadLevel(2f, Application.loadedLevelName));
-
+        levelController.Death(Application.loadedLevelName);
     }
 
     public void Win()
-    {
-        
-        levelController.LoadLevel(Application.loadedLevelName);
-        //StartCoroutine(WaitAndLoadLevel(2f, Application.loadedLevelName));
+    {       
+        isWinner = true;
+        speed = 0;
+        levelController.Win("MainMenu");
     }
-
-    IEnumerator WaitAndLoadLevel(float time, string levelName)
-    {
-        yield return new WaitForSeconds(time);
-        Application.LoadLevel(levelName);
-    }
-
-
 }

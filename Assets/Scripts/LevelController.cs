@@ -3,38 +3,68 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AlphaController : MonoBehaviour {
+public class LevelController : MonoBehaviour {
 
-    public GameObject alphaObj;
-    private Image alphaImage;
-    public int alphaA;
+    //public GameObject alphaObj;
+    public Image alphaImage;
+    public float loadingTime = 0.5f;
+    private float realLoadingTime;
+
+     public Animator textAfterDeath;
+    public CameraShake cameraShake;
+    public CameraFollow cameraFollow;
 
     void Start()
     {
-        alphaImage = alphaObj.GetComponent<Image>();
+        //alphaImage = alphaObj.GetComponent<Image>();
+        realLoadingTime = loadingTime * 2;
     }
 
-    void Update()
+
+    public int score = 0;
+
+
+
+    private Color imageColor;
+
+    private IEnumerator LoadWithDodge(string levelName)
     {
-        if (Input.GetKey(KeyCode.Z))
+        
+        while (alphaImage.color.a < 1.0f)
         {
-            if (alphaA == 0)
+            imageColor = alphaImage.color;
+            imageColor.a +=realLoadingTime*Time.deltaTime;
+            alphaImage.color = imageColor;
+            yield return null;
+        }
+        Application.LoadLevel(levelName);
+    }
+
+    public void Win(string levelName){
+        PlayerPrefs.SetInt("Level"+ (Application.loadedLevel+1).ToString() , 1);
+        PlayerPrefs.SetInt(Application.loadedLevelName+"_score", score);
+        alphaImage.color = new Color(1,1,1,0);
+        StartCoroutine( cameraFollow.Zoom());
+        StartCoroutine(LoadWithDodge(levelName));
+
+    }
+
+    public void Death(string levelName){
+        if (cameraShake)
+        {
+            StartCoroutine(cameraShake.Shake(.15f, .4f));
+            if (textAfterDeath)
             {
-                alphaImage.color = new Color(alphaImage.color.r, alphaImage.color.g, alphaImage.color.b, alphaImage.color.a + 0.5f * Time.deltaTime);
-                if (alphaImage.color.a >= 1.0f)
-                {
-                    alphaA = 1;
-                }
-            }
-            if(alphaA==1)
-            {
-                alphaImage.color = new Color(alphaImage.color.r, alphaImage.color.g, alphaImage.color.b, alphaImage.color.a - 0.5f * Time.deltaTime);
-                if (alphaImage.color.a <= 0f)
-                {
-                    alphaA = 0;
-                }
+                textAfterDeath.enabled = true;
             }
         }
+        if (cameraFollow)
+        {
+            cameraFollow.follow = false;
+            
+        }
+        alphaImage.color = new Color(0,0,0,0);
+        StartCoroutine(LoadWithDodge(levelName));
     }
 
 }

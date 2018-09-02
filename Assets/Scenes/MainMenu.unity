@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2784314, g: 0.2784314, b: 0.2784314, a: 0}
+  m_Color: {r: 0.46323532, g: 0.46323532, b: 0.46323532, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -421,7 +421,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.2784314, g: 0.2784314, b: 0.2784314, a: 0}
+  m_BackGroundColor: {r: 0.9044118, g: 0.9044118, b: 0.9044118, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -948,13 +948,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef44c4ed6ad3ed46a97eaedf2db782c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panCount: 10
-  panPrefab: {fileID: 1392802276388930, guid: ad2887c8ec561b5499f6bb43c4270e77, type: 2}
+  levelList:
+  - levelText: 1
+    unlocked: 1
+    isInteratable: 1
+  - levelText: 2
+    unlocked: 0
+    isInteratable: 0
+  - levelText: 3
+    unlocked: 0
+    isInteratable: 0
+  panPrefab: {fileID: 1873661388925134, guid: ad2887c8ec561b5499f6bb43c4270e77, type: 2}
   scrollRect: {fileID: 38910534}
   panOffset: 100
-  scaleOffset: 3.6
-  scaleSpeed: 10
+  scaleOffset: 5
+  scaleSpeed: 6.6
   snapSpeed: 8
+  colorOffset: 1
+  colorSpeed: 11.8
 --- !u!1 &1607383217
 GameObject:
   m_ObjectHideFlags: 0
