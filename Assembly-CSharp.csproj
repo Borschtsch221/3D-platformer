@@ -107,7 +107,7 @@
      <Compile Include="Assets\Scripts\PlatformScript.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerCharacter.cs" />
      <Compile Include="Assets\Scripts\UI\LevelButton.cs" />
-     <Compile Include="Assets\Scripts\UI\LevelManager.cs" />
+     <Compile Include="Assets\Scripts\UI\MainMenuController.cs" />
      <Compile Include="Assets\Scripts\UI\SnapScrolling.cs" />
      <Compile Include="Assets\time.cs" />
      <None Include="Assets\PostProcessing\Resources\Shaders\DepthOfField.shader" />
