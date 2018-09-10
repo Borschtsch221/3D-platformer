@@ -15,12 +15,6 @@ public class SnapScrolling : MonoBehaviour
     }
 
     public List<Level> levelList;
-    //public GameObject button;
-
-
-
-
-
 
 
     [Range(1, 50)]
@@ -76,6 +70,7 @@ public class SnapScrolling : MonoBehaviour
             isScrolling = false;
             scrollRect.inertia = false;
         }
+
         float nearestPos = float.MaxValue;
         for (int i = 0; i < panCount; i++)
         {
@@ -142,32 +137,38 @@ public class SnapScrolling : MonoBehaviour
             {
                 level.unlocked = 1;
                 level.isInteratable = true;
+                button.lockImg.SetActive(false);
                 if(int.TryParse(button.levelText.text,out selectedPanID)){
+                    //Debug.Log(selectedPanID);
                     selectedPanID--;
                 }
-                //Debug.Log(selectedPanID);
 
             }
             button.unlocked = level.unlocked;
+            if(button.unlocked==1){
+                button.lockImg.SetActive(false);
+            }
             Button buttonComponent = button.GetComponent<Button>();
             buttonComponent.interactable = level.isInteratable;
             buttonComponent.onClick.AddListener(() => LoadLevel("Level" + button.levelText.text));
 
-            if (PlayerPrefs.GetInt("Level" + button.levelText.text + "_score") > 0)
+            if (PlayerPrefs.GetInt("Level" + button.levelText.text + "_star1") > 0)
             {
                 button.star1.SetActive(true);
             }
-            if (PlayerPrefs.GetInt("Level" + button.levelText.text + "_score") > 5000)
+            if (PlayerPrefs.GetInt("Level" + button.levelText.text + "_star2") > 0)
             {
                 button.star2.SetActive(true);
             }
-            if (PlayerPrefs.GetInt("Level" + button.levelText.text + "_score") > 9999)
+            if (PlayerPrefs.GetInt("Level" + button.levelText.text + "_star3") > 0)
             {
                 button.star3.SetActive(true);
             }
 
 
             pansColor[j] = instPans[j].GetComponent<Image>().color;
+
+
             if (j == 0)
             {
                 j++;
@@ -184,6 +185,8 @@ public class SnapScrolling : MonoBehaviour
 
         contentVector.x = pansPos[selectedPanID].x;
         contentRect.anchoredPosition = contentVector;
+        Debug.Log(contentRect.anchoredPosition);
+
 
         SaveAll();
     }
@@ -194,6 +197,7 @@ public class SnapScrolling : MonoBehaviour
         {
             return;
         }
+        Debug.Log("saving");
 
         GameObject[] allButtons = GameObject.FindGameObjectsWithTag("LevelButton");
         foreach (var buttons in allButtons)
@@ -203,10 +207,7 @@ public class SnapScrolling : MonoBehaviour
         }
     }
 
-    void DeleteAll()
-    {
-        PlayerPrefs.DeleteAll();
-    }
+
 
     void LoadLevel(string levelName)
     {

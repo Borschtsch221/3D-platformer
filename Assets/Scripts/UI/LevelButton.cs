@@ -10,5 +10,6 @@ public class LevelButton : MonoBehaviour {
 	public GameObject star1;
 	public GameObject star2;
 	public GameObject star3;
+	public GameObject lockImg;
 	 
 }

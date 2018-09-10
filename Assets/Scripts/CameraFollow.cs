@@ -36,21 +36,24 @@ public class CameraFollow : MonoBehaviour {
 
     }
 
+    [Header("Zoom")]
+    public float turnTime = 0.2f;
+    public float rotateSpeed = 1000f;
+    public float translateSpeed = 5f;
     public IEnumerator Zoom(){
-        float time = 0.3f;
         follow = false;
-        while(time>0){
-            transform.Rotate(0,0,100*Time.deltaTime);
-            transform.Translate(0,0,5f*Time.deltaTime);
-            time-=Time.deltaTime;
+        while(turnTime>0){
+            transform.Rotate(0,0,rotateSpeed/10*Time.deltaTime);
+            transform.Translate(0,0,translateSpeed*Time.deltaTime);
+            turnTime-=Time.deltaTime;
             yield return null;
 
         }
-        time = 0.7f;
-        while(time>0){
-            transform.Rotate(0,0,-1000*Time.deltaTime);
-            transform.Translate(0,0,5f*Time.deltaTime);
-            time-=Time.deltaTime;
+        turnTime = 0.7f;
+        while(turnTime>0){
+            transform.Rotate(0,0,-rotateSpeed*Time.deltaTime);
+            transform.Translate(0,0,translateSpeed*Time.deltaTime);
+            turnTime-=Time.deltaTime;
             yield return null;
 
         }
