@@ -170,7 +170,7 @@ Prefab:
     - target: {fileID: 114726303431523142, guid: 165629af5b9f59c41882bb591c70d92c,
         type: 2}
       propertyPath: fallingSpeed
-      value: 20
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 114726303431523142, guid: 165629af5b9f59c41882bb591c70d92c,
         type: 2}
@@ -181,6 +181,11 @@ Prefab:
         type: 2}
       propertyPath: startForce
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726303431523142, guid: 165629af5b9f59c41882bb591c70d92c,
+        type: 2}
+      propertyPath: speed
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 165629af5b9f59c41882bb591c70d92c, type: 2}

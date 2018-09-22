@@ -18,6 +18,7 @@ public class FinishTrigger : MonoBehaviour {
         PlayerCharacter player = other.GetComponent<PlayerCharacter>();
         if (player)
         {
+            
             player.Win();
         }
     }

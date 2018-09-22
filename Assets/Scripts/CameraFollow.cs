@@ -30,10 +30,6 @@ public class CameraFollow : MonoBehaviour {
             }
             transform.LookAt(lookAt);
         }
-        if(Input.GetKeyDown(KeyCode.A)){
-            StartCoroutine(Zoom());
-        }
-
     }
 
     [Header("Zoom")]

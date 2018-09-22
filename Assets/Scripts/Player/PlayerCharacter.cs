@@ -23,7 +23,7 @@ public class PlayerCharacter : MonoBehaviour
 
     [Range(1f, 100f)]
     public float speed = 5f;
-    
+
 
     private bool isDead = false;
     private bool isWinner = false;
@@ -38,7 +38,8 @@ public class PlayerCharacter : MonoBehaviour
     TypeOfController typeOfController;
 
     private delegate void Controller();
-    private Controller controller;
+    private Controller jumpController;
+    private Controller colorController;
 
 
     void Start()
@@ -49,9 +50,18 @@ public class PlayerCharacter : MonoBehaviour
 
         switch (typeOfController)
         {
-            case TypeOfController.touch: controller += TouchController; break;
-            case TypeOfController.keyboard: controller += KeyboardController; break;
-            case TypeOfController.none: controlled = false; break;
+            case TypeOfController.touch:
+                jumpController += TouchJumpController;
+                colorController += TouchColorController;
+                break;
+            case TypeOfController.keyboard:
+                jumpController += KeyboardJumpController;
+                colorController += KeyboardColorController;
+                break;
+            case TypeOfController.none:
+                controlled = false;
+                colorController += KeyboardColorController;
+                break;
         }
     }
 
@@ -59,43 +69,47 @@ public class PlayerCharacter : MonoBehaviour
 
     void FixedUpdate()
     {
-
+        colorController();
         if (controlled)
         {
             newVelocity = rigidbody.velocity;
             newVelocity.x = speed;
-            controller();
+            jumpController();
             rigidbody.velocity = newVelocity;
         }
 
     }
 
-    void TouchController()
+    void TouchColorController()
     {
-
         foreach (var touch in Input.touches)
         {
-            if (touch.position.x < Screen.width / 2)
+            if (touch.position.x < Screen.width / 2 && touch.phase == TouchPhase.Began)
             {
-                if (touch.phase == TouchPhase.Began)
+
+                if (color == Atributes.Color.purple)
                 {
-                    if (color == Atributes.Color.purple)
-                    {
-                        renderer.material = materials[1];
-                        color = Atributes.Color.yellow;
-                    }
-                    else
-                    {
-                        renderer.material = materials[0];
-                        color = Atributes.Color.purple;
-                    }
-                    if (onChangeRenderer != null)
-                    {
-                        onChangeRenderer();
-                    }
+                    renderer.material = materials[1];
+                    color = Atributes.Color.yellow;
+                }
+                else
+                {
+                    renderer.material = materials[0];
+                    color = Atributes.Color.purple;
+                }
+                if (onChangeRenderer != null)
+                {
+                    onChangeRenderer();
                 }
             }
-            else
+        }
+    }
+
+    void TouchJumpController()
+    {
+        foreach (var touch in Input.touches)
+        {
+            if (touch.position.x >= Screen.width / 2)
             {
                 if ((touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved) && currentJumps < maxJumps && curJumpDurability < jumpDurability)
                 {
@@ -105,7 +119,7 @@ public class PlayerCharacter : MonoBehaviour
                     }
                     curJumpDurability += Time.fixedDeltaTime;
                     float jf = startForce - (curJumpDurability * curJumpDurability) / jumpForce;
-                    if (jumpForce >= 0)
+                    if (jf >= 0)
                         newVelocity.y = jf;
                 }
                 if (touch.phase == TouchPhase.Ended)
@@ -117,7 +131,6 @@ public class PlayerCharacter : MonoBehaviour
             }
         }
         rigidbody.AddForce(Vector3.down * fallingSpeed);
-
     }
 
 
@@ -139,28 +152,8 @@ public class PlayerCharacter : MonoBehaviour
     [Range(0f, 50f)]
     public float fallingSpeed = 15f;
 
-    void KeyboardController()
+    void KeyboardColorController()
     {
-        if (Input.GetKey(KeyCode.Space) && currentJumps < maxJumps && curJumpDurability < jumpDurability)
-        {
-            if (onJump != null)
-            {
-                onJump();
-            }
-            curJumpDurability += Time.fixedDeltaTime;
-            float jf = startForce - (curJumpDurability * curJumpDurability) / jumpForce;
-            if (jumpForce >= 0)
-                newVelocity.y = jf;
-        }
-        rigidbody.AddForce(Vector3.down * fallingSpeed);
-
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            curJumpDurability = 0;
-            currentJumps++;
-        }
-
-
         if (Input.GetKeyDown(KeyCode.X))
         {
             if (color == Atributes.Color.purple)
@@ -179,10 +172,33 @@ public class PlayerCharacter : MonoBehaviour
             }
         }
     }
+    void KeyboardJumpController()
+    {
+        if (Input.GetKey(KeyCode.Space) && currentJumps < maxJumps && curJumpDurability < jumpDurability)
+        {
+            if (onJump != null)
+            {
+                onJump();
+            }
+            curJumpDurability += Time.fixedDeltaTime;
+            float jf = startForce - (curJumpDurability * curJumpDurability) / jumpForce;
+            if (jf >= 0)
+                newVelocity.y = jf;
+            //rigidbody.AddTorque(Vector3.up*1000);
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            curJumpDurability = 0;
+            currentJumps++;
+        }
+
+        rigidbody.AddForce(Vector3.down * fallingSpeed);
+    }
 
     void OnCollisionEnter(Collision other)
     {
         currentJumps = 0;
+        
 
         PlatformScript platform = other.gameObject.GetComponent<PlatformScript>();
         if (platform)
@@ -217,6 +233,7 @@ public class PlayerCharacter : MonoBehaviour
         isDead = true;
         renderer.enabled = false;
         levelController.Death(Application.loadedLevelName);
+        Destroy(gameObject);
     }
 
     public void Win()
@@ -229,4 +246,19 @@ public class PlayerCharacter : MonoBehaviour
         controlled = false;
         levelController.Win("MainMenu");
     }
+
+    public bool Controlled
+    {
+        get
+        {
+            return controlled;
+        }
+        set
+        {
+            controlled = value;
+        }
+    }
+
+
+
 }

@@ -96,6 +96,7 @@
      <Compile Include="Assets\PostProcessing\Runtime\Utils\MaterialFactory.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
      <Compile Include="Assets\PostProcessing\Utilities\CustomMotionTexture\ExampleWheelController.cs" />
+     <Compile Include="Assets\Rotator.cs" />
      <Compile Include="Assets\Scripts\Auxillary\Platforms.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\CameraShake.cs" />
@@ -109,6 +110,7 @@
      <Compile Include="Assets\Scripts\UI\LevelButton.cs" />
      <Compile Include="Assets\Scripts\UI\MainMenuController.cs" />
      <Compile Include="Assets\Scripts\UI\SnapScrolling.cs" />
+     <Compile Include="Assets\Scripts\Ventilator.cs" />
      <None Include="Assets\PostProcessing\Resources\Shaders\DepthOfField.shader" />
      <None Include="Assets\PostProcessing\Resources\Shaders\MotionBlur.cginc" />
      <None Include="Assets\PostProcessing\Resources\Shaders\Fog.shader" />
